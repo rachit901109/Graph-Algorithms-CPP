@@ -6,3 +6,6 @@ Graph Traversal:
 
 Minimum Spanning Trees:
 1. Prims algorithm
+
+Pathfinding:
+1. Dijkstra's Algorithm
