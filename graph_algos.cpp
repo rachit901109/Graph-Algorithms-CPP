@@ -3,7 +3,8 @@ using namespace std;
 typedef std::multimap<int,std::pair<int,int>>::iterator MMPIT;
 #define max 50
 
-// to initialise a 2d array of all zeros use "memset" rather than int arr[r][c]={0}
+// to initialise arrays use "memset" rather than int arr[r][c]={0} but https://www.quora.com/Why-memset-in-c++-work-only-for-1-and-0   
+// Better use std::fill instead
 
 class Graph
 {
@@ -122,7 +123,6 @@ class Graph
             }
         }
         prims_edgelist.insert({s,{d,minw}});
-        // cout<<"Updated mat at "<<s<<" "<<d<<" to "<<minw<<endl;
         prims_mat[s][d]=minw;prims_mat[d][s]=minw;
         vistited[s]=1;vistited[d]=1;
         nodes.insert(s);nodes.insert(d);
@@ -139,7 +139,6 @@ class Graph
                 }
             }
         prims_edgelist.insert({s,{d,minw}});
-        // cout<<"Updated mat"<<s<<" "<<d<<"to "<<minw<<endl;
         prims_mat[s][d]=minw;prims_mat[d][s]=minw;
         vistited[s]=1;vistited[d]=1;
         nodes.insert(s);nodes.insert(d);
@@ -172,6 +171,46 @@ class Graph
     }
 
     cout<<"Cost of MST:- "<<mincost<<" \n";
+    }
+
+    void dijkstras(int s)
+    {
+        multimap<int,pair<int,int>> dj_edgelist;
+        int visited[no_nodes]={0};
+        int mincost[no_nodes];
+        fill(mincost,mincost+no_nodes,INT_MAX);
+        mincost[s]=0;
+        int src = s;
+        for(int i=0;i<no_nodes;i++)
+        {
+            int cost=INT_MAX;
+            for(int j=0;j<no_nodes;j++)
+            {
+                if(adj_mat[s][j]!=0 && mincost[j]>mincost[s]+adj_mat[s][j])
+                {mincost[j]=mincost[s]+adj_mat[s][j];}
+            }
+            visited[s]=1;
+            for(int k =0;k<no_nodes;k++)
+            {
+                if(visited[k]==0 && mincost[k]<cost)
+                {cost=mincost[k];s=k;}
+            }
+        }
+
+        for(int i=0;i<no_nodes;i++)
+        {
+            dj_edgelist.insert({src,{i,mincost[i]}});
+        }
+
+    cout<<"Dijkstras algorithm from source "<<src<<":-\n";
+    MMPIT lit;
+    lit=dj_edgelist.begin();
+    cout<<"Src\tDes\tCost\n";
+    while(lit!=dj_edgelist.end())
+    {
+        cout<<lit->first<<"\t"<<lit->second.first<<"\t"<<lit->second.second<<"\n";
+        lit++;
+    }
     }
 };
 
@@ -210,5 +249,6 @@ int main()
     mygraph.bfs(3);
     mygraph.dfs(3);
     mygraph.prims();
+    mygraph.dijkstras(0);
     return 0;
 }
