@@ -103,6 +103,60 @@ class Graph
         cout<<endl;
     }
 
+    bool bfs_search(int s,int d,vector<int> &bfs_path)
+    {
+        int visited[no_nodes]={0};
+        visited[s]=1;
+        vector<int> bfs_queue;
+        bfs_queue.push_back(s);
+        bfs_path.push_back(s);
+        while (bfs_queue.size()!=0)
+        {        
+            for(int i =0;i<no_nodes;i++)
+            {
+                if(visited[d]==1)
+                {return true;}
+                if(adj_mat[s][i]!=0 && visited[i]==0)
+                {bfs_queue.push_back(i);bfs_path.push_back(i);visited[i]=1;}
+            }
+            bfs_queue.erase(bfs_queue.begin());
+            s=bfs_queue[0];
+        }
+        return false;
+    }
+
+    bool dfs_limited(int s,int d,int limit,int* visited)
+    {
+        if(s == d)
+        {return true;}
+        if(limit<=0)
+        {return false;}
+        visited[s]=1;
+        for(int i=0;i<no_nodes;i++)
+        {
+            if(adj_mat[s][i]!=0 && visited[i]==0)
+            {
+                visited[i]=1;
+                if(dfs_limited(i,d,limit-1,visited) == true)
+                {return true;}
+            }
+        }    
+        return false;
+    }
+
+    // Iterative deepning search IDS https://en.wikipedia.org/wiki/Iterative_deepening_depth-first_search
+    bool ids(int s,int d,int limit)
+    {
+        int visited[no_nodes];
+        for(int i =0;i<=limit;i++)
+        {
+            fill(visited,visited+no_nodes,0);
+            if(dfs_limited(s,d,i,visited) == true)
+            {return true;}
+        }
+        return false;
+    }
+
     void prims()
     {
         int vistited[no_nodes]={0};
@@ -250,5 +304,18 @@ int main()
     mygraph.dfs(3);
     mygraph.prims();
     mygraph.dijkstras(0);
+    if(mygraph.ids(0,3,3))
+    {cout<<"Destination is reachable from source at given depth."<<endl;}
+    else{cout<<"Destination is not reachable from source at given depth."<<endl;}
+
+    vector<int> bfs_path;
+    if(mygraph.bfs_search(0,1,bfs_path))
+    {
+        cout<<"Destination found from source\n.Path:- ";
+        for(auto& itv:bfs_path)
+        {cout<<itv<<" ";}
+    }
+    else{cout<<"Destination not found."<<endl;}
+
     return 0;
 }
