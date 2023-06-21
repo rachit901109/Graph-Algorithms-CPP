@@ -48,6 +48,7 @@ class Graph
             }
             cout << endl;
         }
+        cout<<"--------------------------------------------------------------------------------------------------------------------------------\n";
     }
 
     void show_edgelist()
@@ -61,6 +62,7 @@ class Graph
             cout<<lit->first<<"\t"<<lit->second.first<<"\t"<<lit->second.second<<"\n";
             lit++;
         }
+        cout<<"--------------------------------------------------------------------------------------------------------------------------------\n";
     }
 
     void bfs(int s)
@@ -82,6 +84,7 @@ class Graph
             s=bfs_queue[0];
         }
         cout<<endl;
+        cout<<"--------------------------------------------------------------------------------------------------------------------------------\n";
     }
 
     void dfs_traversal(int s,int* visited)
@@ -101,6 +104,7 @@ class Graph
         int visited[no_nodes]={0};
         dfs_traversal(s,visited);
         cout<<endl;
+        cout<<"--------------------------------------------------------------------------------------------------------------------------------\n";
     }
 
     bool bfs_search(int s,int d,vector<int> &bfs_path)
@@ -225,6 +229,7 @@ class Graph
     }
 
     cout<<"Cost of MST:- "<<mincost<<" \n";
+    cout<<"--------------------------------------------------------------------------------------------------------------------------------\n";
     }
 
     void dijkstras(int s)
@@ -265,6 +270,48 @@ class Graph
         cout<<lit->first<<"\t"<<lit->second.first<<"\t"<<lit->second.second<<"\n";
         lit++;
     }
+    cout<<"--------------------------------------------------------------------------------------------------------------------------------\n";
+    }
+
+    void warshalls()
+    {
+        cout<<"All source shortest path Floyd-Warshalls Algorithm:-\n";
+        int warshall_mat[no_nodes][no_nodes];
+        for(int i=0;i<no_nodes;i++)
+        {
+            for(int j=0;j<no_nodes;j++)
+            {
+                if(i!=j and adj_mat[i][j]==0)
+                {warshall_mat[i][j]=INT16_MAX;}
+                else{warshall_mat[i][j]=adj_mat[i][j];}
+            }
+        }
+
+        for(int k=0;k<no_nodes;k++)
+        {
+            for(int i=0;i<no_nodes;i++)
+            {
+                for(int j=0;j<no_nodes;j++)
+                {
+                    if(i!=k && j!=k && warshall_mat[i][j]!=0 && warshall_mat[i][j]>warshall_mat[i][k]+warshall_mat[k][j])
+                    {warshall_mat[i][j] = warshall_mat[i][k]+warshall_mat[k][j];}
+                }
+            }
+        }
+
+    cout <<"\t";
+    for (int i = 0; i < no_nodes; i++) {
+        cout << " " << i<<"\t";
+    }
+    cout << endl;
+    for (int i = 0; i < no_nodes; i++) {
+        cout << " " << i << "\t";
+        for (int j = 0; j < no_nodes; j++) {
+            cout << " " << warshall_mat[i][j]<<"\t";
+        }
+        cout << endl;
+    }
+        cout<<"--------------------------------------------------------------------------------------------------------------------------------\n";
     }
 };
 
@@ -273,6 +320,7 @@ class Graph
 
 int main()
 {
+    cout<<"--------------------------------------------------------------------------------------------------------------------------------\n\n";
     Graph mygraph(9);
     mygraph.add_edge(0,1,4,true);
     mygraph.add_edge(0,7,8,true);
@@ -307,15 +355,19 @@ int main()
     if(mygraph.ids(0,3,3))
     {cout<<"Destination is reachable from source at given depth."<<endl;}
     else{cout<<"Destination is not reachable from source at given depth."<<endl;}
+    cout<<"--------------------------------------------------------------------------------------------------------------------------------\n\n";
 
     vector<int> bfs_path;
     if(mygraph.bfs_search(0,1,bfs_path))
     {
-        cout<<"Destination found from source\n.Path:- ";
+        cout<<"Destination found from source.\nPath:- ";
         for(auto& itv:bfs_path)
         {cout<<itv<<" ";}
+        cout<<endl;
     }
     else{cout<<"Destination not found."<<endl;}
+    cout<<"--------------------------------------------------------------------------------------------------------------------------------\n\n";
 
+    mygraph.warshalls();
     return 0;
 }
