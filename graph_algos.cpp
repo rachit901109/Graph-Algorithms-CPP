@@ -313,6 +313,49 @@ class Graph
     }
         cout<<"--------------------------------------------------------------------------------------------------------------------------------\n";
     }
+    /*
+    1.call check cycle for every node 2.which basically runs dfs for each node.
+    3.by travelling depth first if we visited parent again we detected a cycle
+    */
+    bool check_cycle_undir(int s,int parent,int* visited)
+    {
+        visited[s]=1;
+        for(int i =0;i<no_nodes;i++)
+        {
+            if(adj_mat[s][i]!=0 && visited[i]==0)
+            {
+                if(check_cycle_undir(i,s,visited))
+                {return true;}
+            }
+            // base cond. if graph has cycle then visited adj node of current node is not its parent - https://www.youtube.com/watch?v=zQ3zgFypzX4
+            else if(adj_mat[s][i]!=0 && visited[i]==1 && i!=parent)
+            {return true;}
+        }
+    return false;
+    }
+
+    bool has_cycle(bool dir)
+    {
+        int visited[no_nodes];
+        fill(visited,visited+no_nodes,0);
+        bool ans;
+        if(dir)
+        {
+
+        }
+        else
+        {
+            for(int i =0;i<no_nodes;i++)
+            {
+                if(visited[i]==0)
+                {
+                    if(check_cycle_undir(i,-1,visited))
+                    {return true;}
+                }
+            }
+        }
+    return false;
+    }
 };
 
 
@@ -346,28 +389,36 @@ int main()
     // mygraph.add_edge(2,4,7,true);
     // mygraph.add_edge(3,4,9,true);
 
+    // no cycle undir
+    // Graph mygraph(4);
+    // mygraph.add_edge(0,1,1,true);
+    // mygraph.add_edge(1,2,1,true);
+    // mygraph.add_edge(2,3,1,true);
+
     mygraph.show_graph();
-    mygraph.show_edgelist();
-    mygraph.bfs(3);
-    mygraph.dfs(3);
-    mygraph.prims();
-    mygraph.dijkstras(0);
-    if(mygraph.ids(0,3,3))
-    {cout<<"Destination is reachable from source at given depth."<<endl;}
-    else{cout<<"Destination is not reachable from source at given depth."<<endl;}
-    cout<<"--------------------------------------------------------------------------------------------------------------------------------\n\n";
+    // mygraph.show_edgelist();
+    // mygraph.bfs(3);
+    // mygraph.dfs(3);
+    // mygraph.prims();
+    // mygraph.dijkstras(0);
+    // if(mygraph.ids(0,3,3))
+    // {cout<<"Destination is reachable from source at given depth."<<endl;}
+    // else{cout<<"Destination is not reachable from source at given depth."<<endl;}
+    // cout<<"--------------------------------------------------------------------------------------------------------------------------------\n\n";
 
-    vector<int> bfs_path;
-    if(mygraph.bfs_search(0,1,bfs_path))
-    {
-        cout<<"Destination found from source.\nPath:- ";
-        for(auto& itv:bfs_path)
-        {cout<<itv<<" ";}
-        cout<<endl;
-    }
-    else{cout<<"Destination not found."<<endl;}
-    cout<<"--------------------------------------------------------------------------------------------------------------------------------\n\n";
+    // vector<int> bfs_path;
+    // if(mygraph.bfs_search(0,1,bfs_path))
+    // {
+    //     cout<<"Destination found from source.\nPath:- ";
+    //     for(auto& itv:bfs_path)
+    //     {cout<<itv<<" ";}
+    //     cout<<endl;
+    // }
+    // else{cout<<"Destination not found."<<endl;}
+    // cout<<"--------------------------------------------------------------------------------------------------------------------------------\n\n";
 
-    mygraph.warshalls();
+    // mygraph.warshalls();
+
+    cout<<mygraph.has_cycle(false)<<endl;
     return 0;
 }
