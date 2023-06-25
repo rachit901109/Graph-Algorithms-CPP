@@ -14,3 +14,5 @@ Minimum Spanning Trees:
 Pathfinding:
 1. Dijkstra's Algorithm
 2. Floyd-Warshall's Algorithm
+
+Cycle detection for undirected 
