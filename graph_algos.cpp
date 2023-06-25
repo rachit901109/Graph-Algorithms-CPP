@@ -25,11 +25,11 @@ class Graph
         // }   
     }
 
-    void add_edge(int src,int des,int weight,bool dir)
+    void add_edge(int src,int des,int weight,bool undir)
     {
         adj_mat[src][des] = weight;
         edge_list.insert({src,{des,weight}});
-        if(dir)
+        if(undir)
         {adj_mat[des][src] = weight;edge_list.insert({des,{src,weight}});}
     }
 
@@ -334,23 +334,52 @@ class Graph
     return false;
     }
 
-    bool has_cycle(bool dir)
+    bool has_cycle_undir()
     {
         int visited[no_nodes];
         fill(visited,visited+no_nodes,0);
-        bool ans;
-        if(dir)
+        for(int i =0;i<no_nodes;i++)
         {
-
-        }
-        else
-        {
-            for(int i =0;i<no_nodes;i++)
+            if(visited[i]==0)
             {
-                if(visited[i]==0)
+                if(check_cycle_undir(i,-1,visited))
+                {return true;}
+            }
+        }
+    return false;
+    }
+
+    bool check_cycle_dir(int s,int* visited,int* rec_stack)
+    {
+        visited[s]=1;
+        rec_stack[s]=1;
+        for(int i =0;i<no_nodes;i++)
+        {
+            if(adj_mat[s][i]!=0 && visited[i]==0)
+            {
+                if(check_cycle_dir(i,visited,rec_stack))
+                {return true;}
+            }
+            else if(adj_mat[s][i]!=0 && rec_stack[i]==1)
+            {return true;}
+        }
+    rec_stack[s]=0;
+    return false;
+    }
+
+    bool has_cycle_dir()
+    {
+        int visited[no_nodes];
+        int rec_stack[no_nodes];
+        fill(visited,visited+no_nodes,0);
+        fill(rec_stack,rec_stack+no_nodes,0);
+        for(int i=0;i<no_nodes;i++)
+        {
+            if(visited[i]==0)
+            {
+                if(check_cycle_dir(i,visited,rec_stack))
                 {
-                    if(check_cycle_undir(i,-1,visited))
-                    {return true;}
+                    return true;
                 }
             }
         }
@@ -364,6 +393,7 @@ class Graph
 int main()
 {
     cout<<"--------------------------------------------------------------------------------------------------------------------------------\n\n";
+    // cyclic undirected graph
     Graph mygraph(9);
     mygraph.add_edge(0,1,4,true);
     mygraph.add_edge(0,7,8,true);
@@ -380,6 +410,7 @@ int main()
     mygraph.add_edge(3,4,9,true);
     mygraph.add_edge(5,4,10,true);
 
+    // cyclic undirected graph
     // Graph mygraph(5);
     // mygraph.add_edge(0,1,2,true);
     // mygraph.add_edge(0,3,6,true);
@@ -389,36 +420,63 @@ int main()
     // mygraph.add_edge(2,4,7,true);
     // mygraph.add_edge(3,4,9,true);
 
-    // no cycle undir
+    // acyclic undirected grpah
     // Graph mygraph(4);
     // mygraph.add_edge(0,1,1,true);
     // mygraph.add_edge(1,2,1,true);
     // mygraph.add_edge(2,3,1,true);
 
+    // cyclic directed graph
+    // Graph mygraph(4);
+    // mygraph.add_edge(0,1,1,false);
+    // mygraph.add_edge(0,2,1,false);
+    // mygraph.add_edge(1,2,1,false);
+    // mygraph.add_edge(2,3,1,false);
+    // mygraph.add_edge(2,0,1,false);
+
+    // directed acyclic graph
+    // Graph mygraph(4);
+    // mygraph.add_edge(0,1,1,false);
+    // mygraph.add_edge(1,2,1,false);
+    // mygraph.add_edge(3,1,1,false);
+    // mygraph.add_edge(3,2,1,false);
+
+
+
     mygraph.show_graph();
-    // mygraph.show_edgelist();
-    // mygraph.bfs(3);
-    // mygraph.dfs(3);
-    // mygraph.prims();
-    // mygraph.dijkstras(0);
-    // if(mygraph.ids(0,3,3))
-    // {cout<<"Destination is reachable from source at given depth."<<endl;}
-    // else{cout<<"Destination is not reachable from source at given depth."<<endl;}
-    // cout<<"--------------------------------------------------------------------------------------------------------------------------------\n\n";
+    mygraph.show_edgelist();
+    mygraph.bfs(0);
+    mygraph.dfs(0);
+    mygraph.prims();
+    mygraph.dijkstras(0);
+    if(mygraph.ids(0,3,3))
+    {cout<<"Destination is reachable from source at given depth."<<endl;}
+    else{cout<<"Destination is not reachable from source at given depth."<<endl;}
+    cout<<"--------------------------------------------------------------------------------------------------------------------------------\n\n";
 
-    // vector<int> bfs_path;
-    // if(mygraph.bfs_search(0,1,bfs_path))
-    // {
-    //     cout<<"Destination found from source.\nPath:- ";
-    //     for(auto& itv:bfs_path)
-    //     {cout<<itv<<" ";}
-    //     cout<<endl;
-    // }
-    // else{cout<<"Destination not found."<<endl;}
-    // cout<<"--------------------------------------------------------------------------------------------------------------------------------\n\n";
+    vector<int> bfs_path;
+    if(mygraph.bfs_search(0,1,bfs_path))
+    {
+        cout<<"Destination found from source.\nPath:- ";
+        for(auto& itv:bfs_path)
+        {cout<<itv<<" ";}
+        cout<<endl;
+    }
+    else{cout<<"Destination not found."<<endl;}
+    cout<<"--------------------------------------------------------------------------------------------------------------------------------\n\n";
 
-    // mygraph.warshalls();
+    mygraph.warshalls();
 
-    cout<<mygraph.has_cycle(false)<<endl;
+    if(mygraph.has_cycle_undir())
+    {cout<<"Cycle detected in undirected graph"<<endl;}
+    else{cout<<"Undirected graph is Acycic"<<endl;}
+    cout<<"--------------------------------------------------------------------------------------------------------------------------------\n";
+
+
+    // if(mygraph.has_cycle_dir())
+    // {cout<<"Cycle detected in directed graph"<<endl;}
+    // else{cout<<"Directed graph is Acycic"<<endl;}
+    // cout<<"--------------------------------------------------------------------------------------------------------------------------------\n";
+
     return 0;
 }
